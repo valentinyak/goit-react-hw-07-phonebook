@@ -4,7 +4,7 @@ import shortid from 'shortid';
 import { connect } from 'react-redux';
 import './ContactForm.module.css';
 import * as contactsActions from '../../redux/contacts/contacts-actions';
-import { store } from '../../redux/store';
+import store from '../../redux/store';
 
 function ContactForm({ addContact }) {
   const handleSubmit = e => {
@@ -13,9 +13,7 @@ function ContactForm({ addContact }) {
     const { nameInput, phoneInput } = e.target.form;
     const isContactExist = store
       .getState()
-      .contacts.items.find(
-        contact => contact.name === e.target.form.nameInput.value,
-      );
+      .contacts.items.find(contact => contact.name === nameInput.value);
 
     if (isContactExist) {
       alert(`${nameInput.value} is already in contacts`);

@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ContactItem from './ContactItem/ContactItem';
 import * as contactsActions from '../../redux/contacts/contacts-actions';
-import { store } from '../../redux/store';
+import store from '../../redux/store';
 
 function ContactList({ contacts, onDelete }) {
   const handleDelete = e => {
     const contactId = store
       .getState()
-      .contacts.items.find(contact => contact.id === e.target.id);
+      .contacts.items.find(({ id }) => id === e.target.id);
 
     onDelete(contactId);
   };
@@ -28,12 +28,12 @@ function ContactList({ contacts, onDelete }) {
 }
 
 const getFilteredContacts = (contacts, filter) =>
-  contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase()),
+  contacts.filter(({ name }) =>
+    name.toLowerCase().includes(filter.toLowerCase()),
   );
 
-const mapStateToProps = store => ({
-  contacts: getFilteredContacts(store.contacts.items, store.contacts.filter),
+const mapStateToProps = ({ contacts: { items, filter } }) => ({
+  contacts: getFilteredContacts(items, filter),
 });
 
 const mapDispatchToProps = dispatch => ({

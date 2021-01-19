@@ -9,22 +9,10 @@ const initialState = [
   { id: shortid.generate(), name: 'Annie Copeland', number: '227-91-26' },
 ];
 
-// const contactsReducer = (state = initialState, action) => {
-//   switch (action.type) {
-//     case 'contacts/add':
-//       return [...state, action.payload];
-
-//     case 'contacts/delete':
-//       return state.filter(contact => contact.id !== action.payload.id);
-
-//     default:
-//       return state;
-//   }
-// };
 const contactsReducer = createReducer(initialState, {
-  [addContact]: (state, action) => [...state, action.payload],
-  [deleteContact]: (state, action) =>
-    state.filter(contact => contact.id !== action.payload.id),
+  [addContact]: (state, { payload }) => [...state, payload],
+  [deleteContact]: (state, { payload }) =>
+    state.filter(({ id }) => id !== payload.id),
 });
 
 export default contactsReducer;

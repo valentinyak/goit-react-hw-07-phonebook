@@ -6,7 +6,7 @@ import changeFilter from '../../redux/filter/filter-actions';
 function Filter({ value, onChange }) {
   return (
     <label>
-      Find contact
+      Find contact by name
       <input type="text" name="filterInput" onChange={onChange} value={value} />
     </label>
   );
