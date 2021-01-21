@@ -1,18 +1,46 @@
-import shortid from 'shortid';
-import { createReducer } from '@reduxjs/toolkit';
-import { addContact, deleteContact } from './contacts-actions';
+import { createReducer, combineReducers } from '@reduxjs/toolkit';
+import * as contactsActions from './contacts-actions';
 
-const initialState = [
-  { id: shortid.generate(), name: 'Rosie Simpson', number: '459-12-56' },
-  { id: shortid.generate(), name: 'Hermione Kline', number: '443-89-12' },
-  { id: shortid.generate(), name: 'Eden Clements', number: '645-17-79' },
-  { id: shortid.generate(), name: 'Annie Copeland', number: '227-91-26' },
-];
-
-const contactsReducer = createReducer(initialState, {
-  [addContact]: (state, { payload }) => [...state, payload],
-  [deleteContact]: (state, { payload }) =>
+const items = createReducer([], {
+  [contactsActions.fetchContactsSuccess]: (_, action) => action.payload,
+  [contactsActions.addContactsSuccess]: (state, action) => [
+    ...state,
+    action.payload,
+  ],
+  [contactsActions.deleteContactsSuccess]: (state, { payload }) =>
     state.filter(({ id }) => id !== payload.id),
+});
+const isLoading = createReducer(false, {
+  [contactsActions.fetchContactsRequest]: () => true,
+  [contactsActions.fetchContactsSuccess]: () => false,
+  [contactsActions.fetchContactsError]: () => false,
+
+  [contactsActions.addContactsRequest]: () => true,
+  [contactsActions.addContactsSuccess]: () => false,
+  [contactsActions.addContactsError]: () => false,
+
+  [contactsActions.deleteContactsRequest]: () => true,
+  [contactsActions.deleteContactsSuccess]: () => false,
+  [contactsActions.deleteContactsError]: () => false,
+});
+const error = createReducer(null, {
+  [contactsActions.fetchContactsError]: (_, action) => action.payload,
+  [contactsActions.fetchContactsRequest]: () => null,
+  [contactsActions.fetchContactsSuccess]: () => null,
+
+  [contactsActions.addContactsError]: (_, action) => action.payload,
+  [contactsActions.addContactsRequest]: () => null,
+  [contactsActions.addContactsSuccess]: () => null,
+
+  [contactsActions.deleteContactsError]: (_, action) => action.payload,
+  [contactsActions.deleteContactsRequest]: () => null,
+  [contactsActions.deleteContactsSuccess]: () => null,
+});
+
+const contactsReducer = combineReducers({
+  items,
+  isLoading,
+  error,
 });
 
 export default contactsReducer;

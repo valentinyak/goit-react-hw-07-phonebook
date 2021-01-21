@@ -1,15 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect, useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+
 import ContactItem from './ContactItem/ContactItem';
-import * as contactsActions from '../../redux/contacts/contacts-actions';
+import * as contactsActions from '../../redux/contacts/contacts-operations';
 import store from '../../redux/store';
+import * as contactsOperations from '../../redux/contacts/contacts-operations';
 
 function ContactList({ contacts, onDelete }) {
+  const dispatch = useDispatch();
+
+  useEffect(() => dispatch(contactsOperations.fetchContacts()), [dispatch]);
+
   const handleDelete = e => {
     const contactId = store
       .getState()
-      .contacts.items.find(({ id }) => id === e.target.id);
+      .contacts.items.items.find(({ id }) => id === e.target.id);
 
     onDelete(contactId);
   };
@@ -32,8 +38,11 @@ const getFilteredContacts = (contacts, filter) =>
     name.toLowerCase().includes(filter.toLowerCase()),
   );
 
-const mapStateToProps = ({ contacts: { items, filter } }) => ({
-  contacts: getFilteredContacts(items, filter),
+const mapStateToProps = store => ({
+  contacts: getFilteredContacts(
+    store.contacts.items.items,
+    store.contacts.filter,
+  ),
 });
 
 const mapDispatchToProps = dispatch => ({

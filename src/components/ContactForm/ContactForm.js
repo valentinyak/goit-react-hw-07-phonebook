@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import shortid from 'shortid';
 import { connect } from 'react-redux';
 import './ContactForm.module.css';
-import * as contactsActions from '../../redux/contacts/contacts-actions';
+import * as contactsActions from '../../redux/contacts/contacts-operations';
 import store from '../../redux/store';
 
 function ContactForm({ addContact }) {
@@ -13,7 +13,7 @@ function ContactForm({ addContact }) {
     const { nameInput, phoneInput } = e.target.form;
     const isContactExist = store
       .getState()
-      .contacts.items.find(contact => contact.name === nameInput.value);
+      .contacts.items.items.find(contact => contact.name === nameInput.value);
 
     if (isContactExist) {
       alert(`${nameInput.value} is already in contacts`);
