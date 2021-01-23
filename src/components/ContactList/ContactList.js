@@ -1,24 +1,22 @@
 import React, { useEffect } from 'react';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import ContactItem from './ContactItem/ContactItem';
 import * as contactsActions from '../../redux/contacts/contacts-operations';
-import store from '../../redux/store';
 import * as contactsOperations from '../../redux/contacts/contacts-operations';
+import { getContactById } from '../../redux/contacts/contacts-selectors';
+import { getFilteredContacts } from '../../redux/filter/filter-selectors';
 
 function ContactList({ contacts, onDelete }) {
   const dispatch = useDispatch();
-
-  useEffect(() => dispatch(contactsOperations.fetchContacts()), [dispatch]);
-
+  const state = useSelector(state => state);
   const handleDelete = e => {
-    const contactId = store
-      .getState()
-      .contacts.items.items.find(({ id }) => id === e.target.id);
-
+    const contactId = getContactById(state, e.target.id);
     onDelete(contactId);
   };
+
+  useEffect(() => dispatch(contactsOperations.fetchContacts()), [dispatch]);
 
   return (
     <ul>
@@ -33,16 +31,8 @@ function ContactList({ contacts, onDelete }) {
   );
 }
 
-const getFilteredContacts = (contacts, filter) =>
-  contacts.filter(({ name }) =>
-    name.toLowerCase().includes(filter.toLowerCase()),
-  );
-
-const mapStateToProps = store => ({
-  contacts: getFilteredContacts(
-    store.contacts.items.items,
-    store.contacts.filter,
-  ),
+const mapStateToProps = state => ({
+  contacts: getFilteredContacts(state),
 });
 
 const mapDispatchToProps = dispatch => ({

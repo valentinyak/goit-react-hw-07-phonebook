@@ -1,19 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import shortid from 'shortid';
-import { connect } from 'react-redux';
-import './ContactForm.module.css';
+import { connect, useSelector } from 'react-redux';
+
 import * as contactsActions from '../../redux/contacts/contacts-operations';
-import store from '../../redux/store';
+import { getAllContacts } from '../../redux/contacts/contacts-selectors';
+import './ContactForm.module.css';
 
 function ContactForm({ addContact }) {
+  const state = useSelector(state => state);
   const handleSubmit = e => {
     e.preventDefault();
 
     const { nameInput, phoneInput } = e.target.form;
-    const isContactExist = store
-      .getState()
-      .contacts.items.items.find(contact => contact.name === nameInput.value);
+    const isContactExist = getAllContacts(state).find(
+      contact => contact.name === nameInput.value,
+    );
 
     if (isContactExist) {
       alert(`${nameInput.value} is already in contacts`);
